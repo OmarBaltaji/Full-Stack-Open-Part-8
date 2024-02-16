@@ -25,3 +25,7 @@ table th, table td {
   text-align: left;
   padding: 5px 15px;
 }
+
+.authors-table {
+  margin-bottom: 3rem;
+}

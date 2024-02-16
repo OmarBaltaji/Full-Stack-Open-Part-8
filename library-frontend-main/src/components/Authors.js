@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { ALL_AUTHORS } from "../queries";
+import AuthorForm from "./AuthorForm";
 
 const Authors = () => {
   const result = useQuery(ALL_AUTHORS);
@@ -30,6 +31,8 @@ const Authors = () => {
           ))}
         </tbody>
       </table>
+
+      <AuthorForm />
     </div>
   )
 }
