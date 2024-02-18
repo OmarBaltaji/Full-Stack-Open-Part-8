@@ -150,13 +150,14 @@ const resolvers = {
       return books.populate('author');
     },
     allAuthors: async () => {
-      return Author.find({});
+      let authors = await Author.find({});
 
-      // return authors.map(author => {
-      //   const authorBooks = books.filter(book => book.author === author.name);
-      //   author.bookCount = authorBooks.length;
-      //   return author;
-      // })
+      authors = authors.map(async (author) => {
+        author.bookCount = await Book.countDocuments({ author: author.id });
+        return author;
+      })
+
+      return authors;
     },
   },
   Mutation: {
