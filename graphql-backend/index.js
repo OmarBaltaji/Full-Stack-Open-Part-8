@@ -135,18 +135,19 @@ const resolvers = {
   Query: {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
-    allBooks: async (roots, args) => {
-      return Book.find({}).populate('author');
+    allBooks: async (roots, { author, genre }) => {
+      let books = Book.find({});
 
-      // let filteredBooks = books;
-      // if (args.author) {
-      //   filteredBooks = books.filter(book => book.author === args.author);
-      // }
-      // if (args.genre) {
-      //   filteredBooks = filteredBooks.filter(book => book.genres.includes(args.genre));
-      // }
+      if (author) {
+        const foundAuthor = await Author.findOne({ name: author })
+        books = books.find({ author: foundAuthor.id });
+      }
 
-      // return filteredBooks;
+      if (genre) {
+        books = books.find({ genres: genre });
+      }
+
+      return books.populate('author');
     },
     allAuthors: async () => {
       return Author.find({});
@@ -171,15 +172,17 @@ const resolvers = {
 
       return newBook;
     },
-    editAuthor: (root, args) => {
-      // const authorToEdit = authors.find(author => author.name === args.name);
-      // if (!authorToEdit) {
-      //   return null;
-      // }
+    editAuthor: async (root, { name, setBornTo }) => {
+      const author = await Author.findOne({ name: name });
+      if (!author) {
+        return null;
+      }
 
-      // const updatedAuthor = { ...authorToEdit, born: args.setBornTo };
-      // authors = authors.map(author => author.name === args.name  ? updatedAuthor : author);
-      // return updatedAuthor;
+      author.born = setBornTo;
+
+      await author.save();
+
+      return author;
     }
   }
 }
