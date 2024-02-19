@@ -29,3 +29,22 @@ table th, table td {
 .authors-table {
   margin-bottom: 3rem;
 }
+
+
+.genres-container {
+  margin-top: 40px;
+}
+
+.genres-container button:first-child {
+  margin-left: 0;
+}
+
+.genres-container button {
+  margin: 0 10px;
+  padding: 10px;
+}
+
+.genres-container button.active {
+  background-color: #22c55e;
+  color: #fff;
+}
