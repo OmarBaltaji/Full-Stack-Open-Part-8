@@ -32,13 +32,14 @@ const AuthorForm = () => {
       <form onSubmit={submit}>
         <div>
           <label>Name</label>
-          <select onChange={({ target }) => setName(target.value)}>
+          <select onChange={({ target }) => setName(target.value)} value={name}>
+            <option value={''}></option>
             {authors.map(author => <option key={author.id} value={author.name}>{author.name}</option>)}
           </select>
         </div>
         <div>
           <label>Birth Year</label>
-          <input type='number' onChange={({ target }) => setBirthYear(target.value)} />
+          <input type='number' value={birthYear} onChange={({ target }) => setBirthYear(target.value)} />
         </div>
 
         <button type='submit'>Submit</button>
