@@ -16,7 +16,12 @@ const Navbar = ({ token, setToken }) => {
       <div>
         <Link className='nav-item' to='/'>Authors</Link>
         <Link className='nav-item' to='/books'>Books</Link>
-        {token && <Link className='nav-item' to='/books/add'>Add book</Link>}
+        {token && 
+          <>
+            <Link className='nav-item' to='/books/add'>Add book</Link>
+            <Link className='nav-item' to='/recommended'>Recommended</Link>
+          </>
+        }
       </div>
       <div>
         {token 
