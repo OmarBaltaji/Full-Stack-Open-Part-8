@@ -3,8 +3,10 @@ import { useQuery } from "@apollo/client";
 import { ALL_BOOKS } from "../queries";
 
 const Books = () => {
-  const result = useQuery(ALL_BOOKS);
-  const [genre, setGenre] = useState(null);
+  const [genre, setGenre] = useState('');
+  const result = useQuery(ALL_BOOKS, {
+    variables: { genre: genre }
+  });
 
   if (result.loading) {
     return <div>Loading books...</div>
@@ -19,10 +21,6 @@ const Books = () => {
       }
     })
   });
-
-  if (genre) {
-    books = books.filter(book => book.genres.includes(genre));
-  }
 
   return (
     <div>
@@ -47,6 +45,7 @@ const Books = () => {
 
       <div className="genres-container">
         {genres.map(g => <button key={g} className={g === genre ? 'active' : ''} onClick={() => setGenre(g)}>{g}</button>)}
+        <button onClick={() => setGenre('')}>Clear Genre</button>
       </div>
     </div>
   )
