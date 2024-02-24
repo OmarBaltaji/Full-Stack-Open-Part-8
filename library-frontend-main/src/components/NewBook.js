@@ -1,23 +1,32 @@
 import { useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client';
-import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries';
+import { ADD_BOOK, ALL_BOOKS } from '../queries';
 import { useNavigate } from 'react-router-dom';
 
-const NewBook = ({ token }) => {
-  const [addBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS } ],
-    onError: (error) => {
-      const messages = error.graphQLErrors.map(e => e.message).join('\n');
-      console.log(messages);
-    }
-  });
-  const navigate = useNavigate();
-
+const NewBook = ({ token, favoriteGenre }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
+
+  const navigate = useNavigate();
+
+  const [addBook] = useMutation(ADD_BOOK, {
+    onError: (error) => {
+      const messages = error.graphQLErrors.map(e => e.message).join('\n');
+      console.log(messages);
+    },
+    update: (cache, response) => {
+      // When accessing the query from the cache, the variable needs to be the same as the one cached
+      cache.updateQuery({ query: ALL_BOOKS, variables: { genre: favoriteGenre } }, ({ allBooks }) => {
+        console.log(allBooks);
+        return {
+          allBooks: allBooks.concat(response.data.addBook)
+        }
+      })
+    }
+  });
 
   useEffect(() => {
     if (!token) {

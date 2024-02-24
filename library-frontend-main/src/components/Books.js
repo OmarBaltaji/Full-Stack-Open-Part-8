@@ -2,17 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { ALL_BOOKS } from "../queries";
 
-const Books = () => {
-  const [genre, setGenre] = useState('');
-  const result = useQuery(ALL_BOOKS, {
-    variables: { genre: genre }
-  });
-
-  if (result.loading) {
-    return <div>Loading books...</div>
-  }
-  
-  let books = result.data.allBooks;
+const Books = ({ books, setGenre, genre }) => {
   const genres = [];
   books.forEach(book => {
     book.genres.forEach(genre => {
