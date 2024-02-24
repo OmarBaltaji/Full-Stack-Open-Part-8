@@ -4,7 +4,17 @@ import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries';
 
 const AuthorForm = ({ authors }) => {
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
-    refetchQueries: [ { query: ALL_AUTHORS } ],
+    onError: (error) => {
+      const messages = error.graphQLErrors.map(e => e.message).join('\n');
+      console.log(messages, error);
+    },
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+        return {
+          allAuthors: allAuthors.map(author => author.name === name ? response.data.editAuthor : author)
+        }
+      })
+    } 
   });
 
   const [name, setName] = useState('');

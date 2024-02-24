@@ -162,6 +162,7 @@ const resolvers = {
       author.born = setBornTo;
 
       await author.save();
+      author.bookCount = await Book.countDocuments({ author: author.id }); 
 
       return author;
     },

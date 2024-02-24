@@ -45,6 +45,7 @@ export const EDIT_AUTHOR = gql`
       name
       born
       id
+      bookCount
     }
   }
 `;
