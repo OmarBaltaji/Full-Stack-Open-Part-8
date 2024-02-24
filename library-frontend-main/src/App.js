@@ -7,7 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import Recommended from './components/Recommended'
 import { useQuery } from '@apollo/client';
-import { ALL_BOOKS } from './queries';
+import { ALL_BOOKS, ALL_AUTHORS } from './queries';
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 
 if (process.env.NODE_ENV !== 'production') {  // Adds messages only in a dev environment
@@ -18,12 +18,13 @@ if (process.env.NODE_ENV !== 'production') {  // Adds messages only in a dev env
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('book-author-token') || '');
   const [genre, setGenre] = useState('');
-  const result = useQuery(ALL_BOOKS, {
+  const booksResult = useQuery(ALL_BOOKS, {
     variables: { genre: genre }
   });
+  const authorsResult = useQuery(ALL_AUTHORS);
 
-  if (result.loading) {
-    return <div>Loading books...</div>
+  if (booksResult.loading || authorsResult.loading) {
+    return <div>Loading...</div>
   }
   
   return (
@@ -32,8 +33,8 @@ const App = () => {
 
       <div className='container'>
         <Routes>
-          <Route path='/' element={<Authors />} ></Route>
-          <Route path='/books' element={<Books books={result.data.allBooks} setGenre={setGenre} genre={genre} />} ></Route>
+          <Route path='/' element={<Authors authors={authorsResult.data.allAuthors} />} ></Route>
+          <Route path='/books' element={<Books books={booksResult.data.allBooks} setGenre={setGenre} genre={genre} />} ></Route>
           <Route path='/books/add' element={<NewBook token={token} favoriteGenre={genre} />} ></Route>
           <Route path='/login' element={<LoginForm setToken={setToken} token={token} />} ></Route>
           <Route path='/recommended' element={<Recommended token={token} />} ></Route>

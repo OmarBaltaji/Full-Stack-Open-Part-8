@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client';
-import { ADD_BOOK, ALL_BOOKS } from '../queries';
+import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries';
 import { useNavigate } from 'react-router-dom';
 
 const NewBook = ({ token, favoriteGenre }) => {
@@ -20,9 +20,16 @@ const NewBook = ({ token, favoriteGenre }) => {
     update: (cache, response) => {
       // When accessing the query from the cache, the variable needs to be the same as the one cached
       cache.updateQuery({ query: ALL_BOOKS, variables: { genre: favoriteGenre } }, ({ allBooks }) => {
-        console.log(allBooks);
         return {
           allBooks: allBooks.concat(response.data.addBook)
+        }
+      })
+
+      cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+        const authorNames = allAuthors.map(author => author.name);
+        const authorName = response.data.addBook.author.name;
+        return {
+          allAuthors: !authorNames.includes(authorName) ? allAuthors.concat(response.data.addBook.author) : allAuthors,
         }
       })
     }
