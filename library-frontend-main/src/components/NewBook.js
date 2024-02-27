@@ -3,7 +3,7 @@ import { useMutation } from '@apollo/client';
 import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries';
 import { useNavigate } from 'react-router-dom';
 
-const NewBook = ({ token, favoriteGenre }) => {
+const NewBook = ({ token }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
@@ -18,13 +18,6 @@ const NewBook = ({ token, favoriteGenre }) => {
       console.log(messages);
     },
     update: (cache, response) => {
-      // When accessing the query from the cache, the variable needs to be the same as the one cached
-      cache.updateQuery({ query: ALL_BOOKS, variables: { genre: favoriteGenre } }, ({ allBooks }) => {
-        return {
-          allBooks: allBooks.concat(response.data.addBook)
-        }
-      })
-
       cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
         const authorNames = allAuthors.map(author => author.name);
         const authorName = response.data.addBook.author.name;

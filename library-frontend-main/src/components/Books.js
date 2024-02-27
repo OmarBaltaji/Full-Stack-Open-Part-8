@@ -5,9 +5,9 @@ import { ALL_BOOKS } from "../queries";
 const Books = ({ books, setGenre, genre }) => {
   const genres = [];
   books.forEach(book => {
-    book.genres.forEach(genre => {
-      if (!genres.includes(genre)) {
-        genres.push(genre);
+    book.genres.forEach(g => {
+      if (!genres.includes(g)) {
+        genres.push(g);
       }
     })
   });
@@ -35,7 +35,7 @@ const Books = ({ books, setGenre, genre }) => {
 
       <div className="genres-container">
         {genres.map(g => <button key={g} className={g === genre ? 'active' : ''} onClick={() => setGenre(g)}>{g}</button>)}
-        <button onClick={() => setGenre('')}>Clear Genre</button>
+        <button onClick={() => setGenre('')}>Clear genre</button>
       </div>
     </div>
   )

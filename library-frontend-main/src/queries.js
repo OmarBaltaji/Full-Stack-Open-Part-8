@@ -1,53 +1,64 @@
 import { gql } from "@apollo/client";
 
+const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    id
+    title
+    author {
+      name
+    }
+    published
+    genres
+  }
+`;
+
+const AUTHOR_DETAILS = gql`
+  fragment AuthorDetails on Author {
+    name
+    born
+    bookCount
+    id
+  }
+`;
+
 export const ALL_AUTHORS = gql`
   query allAuthors {
     allAuthors {
-      name
-      born
-      bookCount
-      id
+      ...AuthorDetails
     }
   }
+
+  ${AUTHOR_DETAILS}
 `;
 
 export const ALL_BOOKS = gql`
   query allBooks($genre: String, $author: String) {
     allBooks (genre: $genre, author: $author) {
-      id
-      title
-      author {
-        name
-      }
-      published
-      genres
+      ...BookDetails
     }
   }
+
+  ${BOOK_DETAILS}
 `;
 
 export const ADD_BOOK = gql`
   mutation addBook($title: String!, $author: String!, $published: Int!, $genres: [String!]!) {
     addBook (title: $title, author: $author, published: $published, genres: $genres) {
-      id
-      title
-      author {
-        name
-      }
-      published
-      genres
+      ...BookDetails
     }
   }
+
+  ${BOOK_DETAILS}
 `;
 
 export const EDIT_AUTHOR = gql`
   mutation editAuthor($name: String!, $setBornTo: Int!) {
     editAuthor(name: $name, setBornTo: $setBornTo) {
-      name
-      born
-      id
-      bookCount
+      ...AuthorDetails
     }
   }
+
+  ${AUTHOR_DETAILS}
 `;
 
 export const LOGIN = gql`
@@ -64,4 +75,14 @@ export const ME = gql`
       favoriteGenre
     }
   }
+`;
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+
+  ${BOOK_DETAILS}
 `;
