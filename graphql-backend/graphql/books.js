@@ -1,6 +1,8 @@
 const Book = require('../models/book');
 const Author = require('../models/author');
 const { GraphQLError } = require('graphql');
+const { PubSub } = require('graphql-subscriptions');
+const pubSub = new PubSub();
 
 const typeDef = `
   type Book {
@@ -24,6 +26,10 @@ const typeDefMutations = `
     published: Int!, 
     genres: [String!]!
   ): Book
+`;
+
+const typeDefSubscriptions = `
+  bookAdded: Book!
 `;
 
 const resolvers = {
@@ -71,7 +77,7 @@ const resolvers = {
       }
       
       const newBook = new Book({ title, published, genres, author: bookAuthor });
-      return newBook.save().catch(error => {
+      newBook.save().catch(error => {
         throw new GraphQLError('Saving book failed', {
           extensions: {
             code: 'BAD_USER_INPUT',
@@ -80,8 +86,16 @@ const resolvers = {
           }
         })
       })
+
+      pubSub.publish('BOOK_ADDED', { bookAdded: newBook });
+      return newBook;
     },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubSub.asyncIterator('BOOK_ADDED')
+    }
   }
 }
 
-module.exports = { typeDef, typeDefQueries, typeDefMutations, resolvers };
+module.exports = { typeDef, typeDefQueries, typeDefMutations, typeDefSubscriptions, resolvers };

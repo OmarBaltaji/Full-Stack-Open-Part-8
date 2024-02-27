@@ -13,6 +13,9 @@ const resolvers = {
     ...authorResolvers.Mutation,
     ...userResolvers.Mutation,
   },
+  Subscription: {
+    ...bookResolvers.Subscription
+  }
 }
 
 module.exports = resolvers;
