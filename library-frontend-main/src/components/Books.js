@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
-import { ALL_BOOKS } from "../queries";
+import React from "react";
 
 const Books = ({ books, setGenre, genre }) => {
   const genres = [];
