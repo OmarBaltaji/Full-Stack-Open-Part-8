@@ -60,24 +60,27 @@ const resolvers = {
         })
       }
   
-      let bookAuthor = await Author.findOne({ name: author });
-      if (!bookAuthor) {
-        try {
-          bookAuthor = new Author({ name: author });
-          await bookAuthor.save();
-        } catch (error) {
-          throw new GraphQLError('Saving author failed', {
-            extensions: {
-              code: 'BAD_USER_INPUT',
-              invalidArgs: author,
-              error,
-            }
-          })
-        }
+      let bookAuthor;
+      try {
+        bookAuthor = await Author.findOneAndUpdate(
+          { name: author },
+          { $setOnInsert: { name: author } },
+          { upsert: true, new: true }
+        );
+      } catch (error) {
+        throw new GraphQLError('Saving author failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: author,
+            error,
+          }
+        })
       }
       
       const newBook = new Book({ title, published, genres, author: bookAuthor });
-      newBook.save().catch(error => {
+      try {
+        await newBook.save();
+      } catch (error) {
         throw new GraphQLError('Saving book failed', {
           extensions: {
             code: 'BAD_USER_INPUT',
@@ -85,7 +88,19 @@ const resolvers = {
             error,
           }
         })
-      })
+      }
+
+      try {
+        await Author.updateOne({ _id: bookAuthor._id }, { $push: { books: newBook._id } });
+      } catch (error) {
+        throw new GraphQLError('Failed adding book for author', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: newBook.title,
+            error,
+          }
+        })
+      }
 
       pubSub.publish('BOOK_ADDED', { bookAdded: newBook });
       return newBook;

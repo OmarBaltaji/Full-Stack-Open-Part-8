@@ -27,14 +27,12 @@ const resolvers = {
   Query: {
     authorCount: async () => Author.collection.countDocuments(),
     allAuthors: async () => {
-      let authors = await Author.find({});
+      const authors = await Author.find({}).populate('books');
 
-      authors = authors.map(async (author) => {
-        author.bookCount = await Book.countDocuments({ author: author.id });
+      return authors.map((author) => {
+        author.bookCount = author.books.length;
         return author;
       })
-
-      return authors;
     },
   },
   Mutation: {
@@ -47,7 +45,7 @@ const resolvers = {
         })
       }
 
-      const author = await Author.findOne({ name: name });
+      const author = await Author.findOne({ name: name }).populate('books');
       if (!author) {
         return null;
       }
@@ -55,7 +53,7 @@ const resolvers = {
       author.born = setBornTo;
 
       await author.save();
-      author.bookCount = await Book.countDocuments({ author: author.id }); 
+      author.bookCount = author.books.length; 
 
       return author;
     },
