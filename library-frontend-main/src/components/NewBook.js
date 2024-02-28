@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client';
-import { ADD_BOOK, ALL_AUTHORS } from '../queries';
+import ALL_AUTHORS from '../graphql/queries/allAuthors';
+import ADD_BOOK from '../graphql/mutations/addBook';
 import { useNavigate } from 'react-router-dom';
 
 const NewBook = ({ token }) => {

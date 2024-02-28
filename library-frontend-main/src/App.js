@@ -7,7 +7,9 @@ import { Route, Routes } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import Recommended from './components/Recommended'
 import { useQuery, useSubscription } from '@apollo/client';
-import { ALL_BOOKS, ALL_AUTHORS, BOOK_ADDED } from './queries';
+import ALL_BOOKS from './graphql/queries/allBooks';
+import ALL_AUTHORS from './graphql/queries/allAuthors';
+import BOOK_ADDED from './graphql/subscriptions/bookAdded';
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { updateCache } from './components/cache/books'
 

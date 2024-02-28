@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import React, { useState } from 'react'
-import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries';
+import ALL_AUTHORS from '../graphql/queries/allAuthors';
+import EDIT_AUTHOR from '../graphql/mutations/editAuthor';
 
 const AuthorForm = ({ authors }) => {
   const [editAuthor] = useMutation(EDIT_AUTHOR, {

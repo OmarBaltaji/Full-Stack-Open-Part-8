@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { ALL_BOOKS, ME } from '../queries';
+import ME from '../graphql/queries/me';
+import ALL_BOOKS from '../graphql/queries/allBooks';
 
 const Recommended = ({ token }) => {
   const navigate = useNavigate();
